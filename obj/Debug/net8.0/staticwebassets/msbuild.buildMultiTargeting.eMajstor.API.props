@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\build\eMajstor.API.props" />
-</Project>
