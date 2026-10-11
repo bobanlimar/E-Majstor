@@ -1,71 +1,81 @@
 CREATE DATABASE IF NOT EXISTS e_majstor;
 USE e_majstor;
 
--- 1. Korisnici (klijenti i majstori)
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS gradovi (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    naziv VARCHAR(100) NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS kategorije (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    naziv VARCHAR(100) NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     ime_prezime VARCHAR(100) NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
+    email VARCHAR(150) NOT NULL UNIQUE,
     sifra_hash VARCHAR(255) NOT NULL,
-    telefon VARCHAR(20),
-    grad VARCHAR(50),
-    uloga ENUM('klijent', 'majstor') DEFAULT 'klijent',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    telefon VARCHAR(30),
+    grad_id INT,
+    uloga ENUM('klijent', 'majstor', 'admin') DEFAULT 'klijent',
+    kreiran_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (grad_id) REFERENCES gradovi(id) ON DELETE SET NULL
 );
 
--- 2. Profil majstora
-CREATE TABLE majstori (
+CREATE TABLE IF NOT EXISTS majstori (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT UNIQUE NOT NULL,
-    kategorija VARCHAR(50) NOT NULL,
+    kategorija_id INT,
     opis TEXT,
-    cena_po_satu DECIMAL(10, 2),
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    cena_po_satu DECIMAL(10, 2) DEFAULT 0.00,
+    ocena_prosek DECIMAL(3, 2) DEFAULT 0.00,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (kategorija_id) REFERENCES kategorije(id) ON DELETE SET NULL
 );
 
--- 3. Usluge koje majstori nude
-CREATE TABLE usluge (
+CREATE TABLE IF NOT EXISTS usluge (
     id INT AUTO_INCREMENT PRIMARY KEY,
     majstor_id INT NOT NULL,
-    naziv_usluge VARCHAR(100) NOT NULL,
+    naziv_usluge VARCHAR(150) NOT NULL,
     opis TEXT,
-    cena DECIMAL(10, 2),
+    cena DECIMAL(10, 2) NOT NULL,
     FOREIGN KEY (majstor_id) REFERENCES majstori(id) ON DELETE CASCADE
 );
 
--- 4. Zahtevi za usluge
-CREATE TABLE zahtevi (
+CREATE TABLE IF NOT EXISTS zahtevi (
     id INT AUTO_INCREMENT PRIMARY KEY,
     klijent_id INT NOT NULL,
     majstor_id INT NOT NULL,
+    usluga_id INT,
     opis_kvara TEXT NOT NULL,
     status ENUM('na_cekanju', 'prihvaceno', 'odbijeno', 'zavrseno') DEFAULT 'na_cekanju',
-    datum_zahteva TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    kreiran_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (klijent_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (majstor_id) REFERENCES users(id) ON DELETE CASCADE
+    FOREIGN KEY (majstor_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (usluga_id) REFERENCES usluge(id) ON DELETE SET NULL
 );
 
--- 5. Recenzije i ocene
-CREATE TABLE ocene (
+CREATE TABLE IF NOT EXISTS ocene (
     id INT AUTO_INCREMENT PRIMARY KEY,
     zahtev_id INT UNIQUE NOT NULL,
     klijent_id INT NOT NULL,
     majstor_id INT NOT NULL,
     ocena INT CHECK (ocena BETWEEN 1 AND 5),
     komentar TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    kreiran_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (zahtev_id) REFERENCES zahtevi(id) ON DELETE CASCADE,
     FOREIGN KEY (klijent_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (majstor_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- 6. Poruke / Obaveštenja
-CREATE TABLE poruke (
+CREATE TABLE IF NOT EXISTS poruke (
     id INT AUTO_INCREMENT PRIMARY KEY,
     posiljalac_id INT NOT NULL,
     primalac_id INT NOT NULL,
-    tekst_poruke TEXT NOT NULL,
+    sadrzaj TEXT NOT NULL,
     poslato_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (posiljalac_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (primalac_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
