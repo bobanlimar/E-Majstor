@@ -6,7 +6,7 @@ using eMajstor.API.Models;
 namespace eMajstor.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     public class MajstorController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -16,35 +16,55 @@ namespace eMajstor.API.Controllers
             _context = context;
         }
 
-        // GET: api/majstor
+        // 1. GET: api/v1/Majstor (Lista svih majstora uz opciono filtriranje po kategoriji)
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Majstor>>> GetMajstori()
+        public async Task<IActionResult> GetMajstori([FromQuery] string? kategorija)
         {
-            return await _context.Majstori.ToListAsync();
+            var query = _context.Majstori.Include(m => m.User).AsQueryable();
+
+            if (!string.IsNullOrEmpty(kategorija))
+            {
+                query = query.Where(m => m.Kategorija.ToLower() == kategorija.ToLower());
+            }
+
+            var majstori = await query.ToListAsync();
+            return Ok(majstori);
         }
 
-        // GET: api/majstor/1
+        // 2. GET: api/v1/Majstor/{id} (Pregled profila majstora po ID-ju)
         [HttpGet("{id}")]
-        public async Task<ActionResult<Majstor>> GetMajstor(int id)
+        public async Task<IActionResult> GetMajstorById(int id)
         {
-            var majstor = await _context.Majstori.FindAsync(id);
+            var majstor = await _context.Majstori
+                .Include(m => m.User)
+                .FirstOrDefaultAsync(m => m.Id == id);
 
             if (majstor == null)
             {
-                return NotFound("Majstor nije pronađen.");
+                return NotFound(new { poruka = "Majstor nije pronađen." });
             }
 
-            return majstor;
+            return Ok(majstor);
         }
 
-        // POST: api/majstor
-        [HttpPost]
-        public async Task<ActionResult<Majstor>> PostMajstor(Majstor majstor)
+        // 3. PUT: api/v1/Majstor/{id} (Ažuriranje profila majstora)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateProfil(int id, [FromBody] Majstor majstorUpdate)
         {
-            _context.Majstori.Add(majstor);
-            await _context.SaveChangesAsync();
+            var majstor = await _context.Majstori.FindAsync(id);
+            if (majstor == null)
+            {
+                return NotFound(new { poruka = "Majstor nije pronađen." });
+            }
 
-            return CreatedAtAction(nameof(GetMajstor), new { id = majstor.Id }, majstor);
+            // Ažuriramo polja iz tvog modela
+            majstor.Kategorija = majstorUpdate.Kategorija;
+            majstor.Opis = majstorUpdate.Opis;
+            majstor.CenaPoSatu = majstorUpdate.CenaPoSatu;
+
+            await _context.SaveChangesAsync();
+            return Ok(majstor);
         }
     }
 }
+
