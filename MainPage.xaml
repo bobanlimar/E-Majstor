@@ -27,6 +27,8 @@
                 BorderColor="Gray"
                 SemanticProperties.Description="Dugme da bi korisnik izabrao koji posao mu treba raditi (posao)"
                 />
+
+
         <Image Source="logo.png"
                Grid.ColumnSpan="1"
                Grid.Column="1"
@@ -48,20 +50,26 @@
                MinimumWidthRequest="50"
                MinimumHeightRequest="50"
                BackgroundColor="Transparent"
+                     
+                     Clicked="NavigationOnClicked"
+                     
                SemanticProperties.Description="profilna slika korisnika"
-               />
+               >
 
+        </ImageButton>
+        <!--pocetak grida za filter-->
         <Grid Grid.Row="1"
               Grid.RowSpan="1"
               Grid.Column="2"
               Grid.ColumnSpan="1"
-              RowDefinitions="auto,auto,auto,auto,auto,auto"
+              RowDefinitions="auto,auto,auto,auto,auto,auto,auto,auto,auto,auto"
               ColumnDefinitions=".45*,.45*,.45*"
               RowSpacing="10"
               ColumnSpacing="5"
-              Margin="10" >
+              Margin="10" 
+              Padding="6">
             <BoxView Grid.Row="0"
-                     Grid.RowSpan="5"
+                     Grid.RowSpan="10"
                      Grid.Column="0"
                      Grid.ColumnSpan="3"
                      Color="Gray"
@@ -75,7 +83,7 @@
                    HorizontalOptions="Center"
                    TextColor="White"
                    TextDecorations="Underline"
-                   SemanticProperties.Description="Title za stranicu"
+                 
                    />
             <Label Grid.Row="2"
                    Grid.Column="0"
@@ -84,7 +92,7 @@
                    Text="Mesto"
                    TextColor="White"
                    FontSize="Small"
-                   SemanticProperties.Description="Title gde se ukucava mesto"
+                   
                 />
             <Entry Grid.Row="3"
                    Grid.Column="0"
@@ -95,6 +103,7 @@
                    BackgroundColor="Gray"
                    HorizontalOptions="Center"
                    WidthRequest="100"
+                   MaxLength="35"
                    />
             <Entry Grid.Row="3"
                    Grid.Column="1"
@@ -105,6 +114,7 @@
                    BackgroundColor="Gray"
                    HorizontalOptions="Center"
                    WidthRequest="100"
+                   MaxLength="105"
                    />
             <Entry Grid.Row="3"
                    Grid.Column="2"
@@ -115,6 +125,7 @@
                    BackgroundColor="Gray"
                    HorizontalOptions="Center"
                    WidthRequest="100"
+                   MaxLength="60"
                    />
             <Label Grid.Row="4"
                    Grid.Column="0"
@@ -123,16 +134,54 @@
                    Text="Popularnost"
                    TextColor="White"
                    FontSize="Small"
-                   SemanticProperties.Description="Title za popularnost"
+                   
                    />
-            <!--checkbox za recenzije, checkbox za dostupnost(opcija za urgentne poslove), ?cena?)-->
-            <!--poslovi DD?, novi grid za to, pokaze se kada bude bilo klikovano na i skloni, scroll??-->
-
+            <RadioButton Content="Najvise recenzija" GroupName="Recenzije" IsChecked="True" 
+                             Grid.Row="5"
+                             Grid.Column="0"
+                             Margin="15"
+                             HorizontalOptions="Center"/>
+            <RadioButton Content="Bilo ko" GroupName="Recenzije" 
+                             Grid.Row="5"
+                             Grid.Column="1"
+                             Margin="10"
+                             HorizontalOptions="Center"/>
+            <Label Grid.Row="6"
+                   Grid.Column="0"
+                   Grid.ColumnSpan="3"
+                   HorizontalOptions="Center"
+                   Text="Dostupnost"
+                   TextColor="White"
+                   FontSize="Small"/>
             
+            <RadioButton Grid.Row="7" IsChecked="True"
+                         Grid.Column="0"
+                         Content="Danas"
+                         GroupName="dostupnost"
+                         Margin="10"
+                         HorizontalOptions="Center"/>
+            <RadioButton Grid.Row="7"
+                         Grid.Column="1"
+                         Content="Ove nedelje"
+                         GroupName="dostupnost"
+                         Margin="10"
+                         HorizontalOptions="Center"/>
+            <RadioButton Grid.Row="7"
+                         Grid.Column="2"
+                         Content="Urgentno"
+                         GroupName="dostupnost"
+                         Margin="10"
+                         HorizontalOptions="Center"/>
 
         </Grid>
+        <!--kraj grida za filter-->
+
+
+
 
 
     </Grid>
-
+    <!-- desni grid: filter: ?cena?) | "profilno" dugme za korisnika koje vodi na settings da se zavrsi-->
+    <!--srednji grid: ovde se pojavljivaju majstori sa tagovima koji korisnik bira-->
+    <!--levi grid: kada se klikne na dugme za poslove da se pojavi novi ?grid? sa boxview koji moze da se skroluje za poslove-->
 </ContentPage>

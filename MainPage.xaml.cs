@@ -8,6 +8,9 @@
             InitializeComponent();
         }
 
-       
+        private async void NavigationOnClicked(object sender, EventArgs e)
+        {
+            await Shell.Current.GoToAsync(nameof(Profile));
+        }
     }
 }

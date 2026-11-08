@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Emajstor.Profile">
+
+
+    <Grid RowDefinitions="55, *"
+          ColumnDefinitions=".30*,*"
+          RowSpacing="5"
+          ColumnSpacing="5"
+          BackgroundColor="White">
+
+        <BoxView Grid.Row="0"
+                 Grid.Column="0"
+                 Grid.ColumnSpan="2"
+                 Grid.RowSpan="1"
+                 BackgroundColor="LightGray"/>
+        <BoxView Grid.Row="0"
+                 Grid.Column="0"
+                 Grid.RowSpan="2"
+                 Background="LightGray"/>
+
+        <Label Grid.Row="0"
+               Grid.Column="0"
+               Grid.ColumnSpan="2"
+               Text="Profile Settings"
+               HorizontalOptions="Center"
+               SemanticProperties.HeadingLevel="Level1"
+               FontSize="Title"
+               TextColor="Black"/>
+
+        <Button Text="Nazad"
+                MaximumWidthRequest="80"
+                MaximumHeightRequest="40"
+                BackgroundColor="LightPink" 
+                
+                HorizontalOptions="Start"
+                VerticalOptions="Start"
+                Margin="5"/>
+
+        <!--ovde cu biti osnivne settings za korisnika(toggle)-->
+        <!--Napraviti da kada se klikne "Back" dugme, vrati se nazad na MainPage-->
+
+
+
+    </Grid>
+
+</ContentPage>
