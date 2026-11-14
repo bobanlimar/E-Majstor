@@ -16,7 +16,7 @@ namespace eMajstor.API.Controllers
             _context = context;
         }
 
-        // POST: api/v1/Recenzije
+        // POST: api/v1/recenzije
         [HttpPost]
         public async Task<IActionResult> DodajRecenziju([FromBody] Ocena recenzija)
         {
@@ -28,11 +28,12 @@ namespace eMajstor.API.Controllers
             return Ok(new { poruka = "Recenzija je uspešno dodata!", recenzija });
         }
 
-        // GET: api/v1/Recenzije/majstor/{majstorId}
+        // GET: api/v1/recenzije/majstor/{majstorId}
         [HttpGet("majstor/{majstorId}")]
         public async Task<IActionResult> GetRecenzijeZaMajstora(int majstorId)
         {
             var recenzije = await _context.Ocene
+                .AsNoTracking()
                 .Where(r => r.MajstorId == majstorId)
                 .ToListAsync();
 

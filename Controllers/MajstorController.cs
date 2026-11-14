@@ -20,7 +20,10 @@ namespace eMajstor.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetMajstori([FromQuery] string? kategorija)
         {
-            var query = _context.Majstori.Include(m => m.User).AsQueryable();
+            var query = _context.Majstori
+                .Include(m => m.User)
+                .AsNoTracking()
+                .AsQueryable();
 
             if (!string.IsNullOrEmpty(kategorija))
             {
@@ -37,6 +40,7 @@ namespace eMajstor.API.Controllers
         {
             var majstor = await _context.Majstori
                 .Include(m => m.User)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (majstor == null)
@@ -51,20 +55,25 @@ namespace eMajstor.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateProfil(int id, [FromBody] Majstor majstorUpdate)
         {
-            var majstor = await _context.Majstori.FindAsync(id);
-            if (majstor == null)
+            // Ostaje standardno bez AsNoTracking jer se podaci ažuriraju
+            if (id != majstorUpdate.Id)
+            {
+                return BadRequest(new { poruka = "ID se ne poklapa." });
+            }
+
+            var postojeciMajstor = await _context.Majstori.FindAsync(id);
+            if (postojeciMajstor == null)
             {
                 return NotFound(new { poruka = "Majstor nije pronađen." });
             }
 
-            // Ažuriramo polja iz tvog modela
-            majstor.Kategorija = majstorUpdate.Kategorija;
-            majstor.Opis = majstorUpdate.Opis;
-            majstor.CenaPoSatu = majstorUpdate.CenaPoSatu;
+            postojeciMajstor.Kategorija = majstorUpdate.Kategorija;
+            postojeciMajstor.Opis = majstorUpdate.Opis;
+            // Dodaj ostala polja po potrebi
 
             await _context.SaveChangesAsync();
-            return Ok(majstor);
+
+            return Ok(new { poruka = "Profil je uspešno ažuriran!", postojeciMajstor });
         }
     }
 }
-

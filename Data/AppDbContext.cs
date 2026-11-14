@@ -15,5 +15,6 @@ namespace eMajstor.API.Data
         public DbSet<Zahtev> Zahtevi { get; set; }
         public DbSet<Ocena> Ocene { get; set; }
         public DbSet<Poruka> Poruke { get; set; }
+        public DbSet<Kategorija> Kategorije { get; set; }
     }
 }

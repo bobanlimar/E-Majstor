@@ -16,11 +16,13 @@ namespace eMajstor.API.Controllers
             _context = context;
         }
 
-        // GET: api/v1/zahtevi
+           // GET: api/v1/zahtevi
         [HttpGet]
         public async Task<IActionResult> GetZahtevi()
         {
-            var zahtevi = await _context.Zahtevi.ToListAsync();
+            var zahtevi = await _context.Zahtevi
+                .AsNoTracking()
+                .ToListAsync();
             return Ok(zahtevi);
         }
 
@@ -29,6 +31,7 @@ namespace eMajstor.API.Controllers
         public async Task<IActionResult> GetZahteviZaKlijenta(int klijentId)
         {
             var zahtevi = await _context.Zahtevi
+                .AsNoTracking()
                 .Where(z => z.KlijentId == klijentId)
                 .ToListAsync();
 

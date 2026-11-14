@@ -20,7 +20,9 @@ namespace eMajstor.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetUsluge()
         {
-            var usluge = await _context.Usluge.ToListAsync();
+            var usluge = await _context.Usluge
+                .AsNoTracking()
+                .ToListAsync();
             return Ok(usluge);
         }
 
@@ -29,6 +31,7 @@ namespace eMajstor.API.Controllers
         public async Task<IActionResult> GetUslugeZaMajstora(int majstorId)
         {
             var usluge = await _context.Usluge
+                .AsNoTracking()
                 .Where(u => u.MajstorId == majstorId)
                 .ToListAsync();
 

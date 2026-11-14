@@ -34,6 +34,7 @@ namespace eMajstor.API.Controllers
         public async Task<IActionResult> GetUpitiZaMajstora(int majstorId)
         {
             var upiti = await _context.Zahtevi
+                .AsNoTracking()
                 .Where(z => z.MajstorId == majstorId)
                 .ToListAsync();
 
